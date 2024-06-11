@@ -5,6 +5,8 @@ import "@/css/satoshi.css";
 import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
+import { SnackbarProvider } from "notistack";
+import { SessionProvider } from "next-auth/react";
 
 export default function RootLayout({
   children,
@@ -24,7 +26,21 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
-          {loading ? <Loader /> : children}
+          {loading ? (
+            <Loader />
+          ) : (
+            <SessionProvider refetchInterval={60 * 60}>
+              <SnackbarProvider
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                autoHideDuration={4000}
+              >
+                {children}
+              </SnackbarProvider>
+            </SessionProvider>
+          )}
         </div>
       </body>
     </html>

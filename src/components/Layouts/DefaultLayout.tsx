@@ -1,7 +1,9 @@
 "use client";
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import { useSession } from "next-auth/react";
+import { redirect, useRouter } from "next/navigation";
 
 export default function DefaultLayout({
   children,
@@ -14,6 +16,21 @@ export default function DefaultLayout({
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true",
   );
+  // const { data:session, status }:any = useSession();
+  // console.log('status', status);
+
+  // console.log('session', session?.accessToken);
+  
+  
+  // const router = useRouter();
+  // useEffect(() => {
+  //   if (!session?.accessToken ) {
+  //     router.push("/auth/signin");
+  //   } else {
+  //     router.push("/");
+  //   }
+  // }, [router, session ]);
+
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}

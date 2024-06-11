@@ -1,0 +1,117 @@
+// import AuthService from "@/services/AuthService";
+// import { NextAuthOptions } from "next-auth";
+// import NextAuth from "next-auth/next";
+// import Credentials from "next-auth/providers/credentials";
+
+// const authOptions: NextAuthOptions = {
+//   session: {
+//     strategy: "jwt",
+//   },
+//   providers: [
+//     Credentials({
+//       name: "credentials",
+//       type: "credentials",
+//       credentials: {
+//         email: { label: "Email", type: "email" },
+//         password: { label: "Password", type: "password" },
+//       },
+//       async authorize(credentials) {
+//         try {
+//           const user = await AuthService.login(credentials);
+//           if (user?.data) {
+//             // return { 
+//             //   ...user, 
+//             //   accessToken: user.data?.token,
+//             //   subscription: user.data?.status === "active" ? true : false,
+//             //   can_see_manage_teams : user.data?.can_see_manage_teams === true ? true : false
+//             // };
+//             const getOwnProfile = await AuthService.getOwnProfile({token: user.data.token});
+//             console.log("getOwnProfile", getOwnProfile);
+            
+//             user.data.ownProfile = getOwnProfile.data;
+//             return user
+//           } else {
+//             throw new Error("Invalid credentials");
+//           }
+//         } catch (error) {
+//           console.log("error", error);
+//           throw new Error("Login failed");
+//         }
+//       },
+//     }),
+//   ],
+//   pages: {
+//     signIn: "/auth/signin",
+//   },
+//   callbacks: {
+//     async signIn({ user, account, profile, email, credentials }) {
+//       console.log("masuk signIn");
+//       const isAllowedToSignIn = true
+//       if (isAllowedToSignIn) {
+//         return true
+//       } else {
+//         // Return false to display a default error message
+//         return false
+//         // Or you can return a URL to redirect to:
+//         // return '/unauthorized'
+//       }
+  
+//     },
+//     async redirect({ url, baseUrl }) {
+//       console.log('masuk redirect');
+      
+//       // Allows relative callback URLs
+//       if (url.startsWith("/")) return `${baseUrl}${url}`
+//       // Allows callback URLs on the same origin
+//       else if (new URL(url).origin === baseUrl) return url
+//       return baseUrl
+//     },
+//     jwt({ token, user }:any) {
+//       console.log("user", user);
+//       console.log("token", token);
+//       if(user){
+//         token.accessToken = user?.data?.token,
+//         token.ownProfile = user?.data?.ownProfile
+//         token.expiresIn = user.data?.expires_in
+//       }
+
+//       console.log("token ss", token);
+      
+
+//       return token
+      
+      
+//       // if (!user) return token;
+//       // return {
+//       //   ...token,
+//       //   accessToken: user,
+
+//       // };
+//     },
+//     session({ session, token, user }:any) {
+//       console.log("session callback", session);
+//       console.log("token session callback", token);
+//       console.log("user session callback", user);
+      
+
+//       if(token){
+//         session.accessToken = token.accessToken,
+//         session.ownProfile = token.ownProfile
+//         session.user.name = token.ownProfile.name
+//         session.user.email = token.ownProfile.email,
+//         session.user.roles = token.ownProfile.roles
+//       }
+      
+//       return session;
+      
+//       // return {
+//       //   ...session,
+//       //   accessToken: token.accessToken,
+//       // };
+//     },
+//   },
+// };
+
+// const handler = NextAuth(authOptions);
+
+// export { handler as GET, handler as POST };

@@ -1,22 +1,55 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { signIn } from "next-auth/react";
+import { enqueueSnackbar } from "notistack";
+import { useRouter } from "next/navigation";
+import { MdOutlineVpnKeyOff, MdVpnKey } from "react-icons/md";
 
-export const metadata: Metadata = {
-  title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
-  description: "This is Next.js Signin Page TailAdmin Dashboard Template",
-};
+// export const metadata: Metadata = {
+//   title: "Next.js SignIn Page | TailAdmin - Next.js Dashboard Template",
+//   description: "This is Next.js Signin Page TailAdmin Dashboard Template",
+// };
 
 const SignIn: React.FC = () => {
+  const { push } = useRouter();
+  const [formValue, setFormValue] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const res: any = await signIn("credentials", {
+      redirect: false,
+      email: formValue.email,
+      password: formValue.password,
+      callbackUrl: "/",
+    });
+
+    const results:any = JSON.parse(res?.error);
+    console.log("res", res);
+
+    if (res?.ok) {
+      enqueueSnackbar("Login Successful", { variant: "success" });
+      push("/");
+    } else {
+      enqueueSnackbar(results.message, { variant: "error" });
+    }
+  };
+
   return (
     // <DefaultLayout>
     <>
       {/* <Breadcrumb pageName="Sign In" /> */}
 
-      <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="mx-auto max-w-screen-2xl rounded-sm border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark md:p-6 2xl:p-10">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center">
@@ -174,7 +207,7 @@ const SignIn: React.FC = () => {
                 Sign In to TailAdmin
               </h2>
 
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Email
@@ -182,6 +215,9 @@ const SignIn: React.FC = () => {
                   <div className="relative">
                     <input
                       type="email"
+                      onChange={(e) =>
+                        setFormValue({ ...formValue, email: e.target.value })
+                      }
                       placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -212,13 +248,16 @@ const SignIn: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
+                      onChange={(e) =>
+                        setFormValue({ ...formValue, password: e.target.value })
+                      }
                       placeholder="6+ Characters, 1 Capital letter"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-white outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      className="text-dark w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
                     <span className="absolute right-4 top-4">
-                      <svg
+                      {/* <svg
                         className="fill-current"
                         width="22"
                         height="22"
@@ -236,7 +275,11 @@ const SignIn: React.FC = () => {
                             fill=""
                           />
                         </g>
-                      </svg>
+                      </svg> */}
+                      <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                        {showPassword ? <MdVpnKey />  : <MdOutlineVpnKeyOff />  }
+                        {/* <MdOutlineVpnKeyOff /> */}
+                      </button>
                     </span>
                   </div>
                 </div>
